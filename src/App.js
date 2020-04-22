@@ -1,14 +1,16 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import Slider from './components/carousel'
 import Header from './components/header'
+import Carousels from './components/main'
+import Content from './components/content'
+var items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 class App extends Component {
   render() {
     return (
     <>
     <Header/>
-    <Slider/>
+   <Content />
+   <Carousels items={items} active={0}/>
     </>
        
     )

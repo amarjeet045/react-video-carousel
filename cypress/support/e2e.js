@@ -12,3 +12,9 @@ Cypress.on("uncaught:exception", (err, runnable) => {
   }
   return true;
 });
+
+Cypress.on('fail', (error, runnable) => {
+  // You can log the error or save custom info here
+  cy.task('log', error.message);
+  throw error; // still fail the test
+});

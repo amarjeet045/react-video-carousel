@@ -1,0 +1,116 @@
+name: CI - Cypress Tests
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  cypress-group1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Cypress tests group1
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm start
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 60
+          browser: chrome
+          spec: cypress/e2e/group1/*.cy.js
+        env:
+          CI: true
+
+      - name: Upload Cypress Screenshots group1
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots-group1
+          path: cypress/screenshots
+
+      - name: Upload Cypress Videos group1
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos-group1
+          path: cypress/videos
+
+      - name: Upload Cypress Reports group1
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-reports-group1
+          path: cypress/reports
+
+  cypress-group2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Cypress tests group2
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm start
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 60
+          browser: chrome
+          spec: cypress/e2e/group2/*.cy.js
+        env:
+          CI: true
+
+      - name: Upload Cypress Screenshots group2
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots-group2
+          path: cypress/screenshots
+
+      - name: Upload Cypress Videos group2
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos-group2
+          path: cypress/videos
+
+      - name: Upload Cypress Reports group2
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-reports-group2
+          path: cypress/reports

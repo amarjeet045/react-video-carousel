@@ -1,6 +1,7 @@
 import React from 'react';
 import Item from './Item'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+
 class Carousels extends React.Component {
     
     constructor(props) {
@@ -17,7 +18,6 @@ class Carousels extends React.Component {
     generateItems() {
         var items = []
         var level
-        console.log(this.state.active)
         for (var i = this.state.active - 2; i < this.state.active + 3; i++) {
             var index = i
             if (i < 0) {
@@ -26,7 +26,16 @@ class Carousels extends React.Component {
                 index = i % this.state.items.length
             }
             level = this.state.active - i
-            items.push(<Item key={index} id={this.state.items[index]} level={level} />)
+            // Wrap each Item in a CSSTransition so TransitionGroup can animate them.
+            items.push(
+                <CSSTransition
+                    key={index}
+                    timeout={300}
+                    classNames={this.state.direction || 'slide'}
+                >
+                    <Item id={this.state.items[index]} level={level} />
+                </CSSTransition>
+            )
         }
         return items
     }
@@ -53,10 +62,9 @@ class Carousels extends React.Component {
             
             <div id="carousel" className="noselect">
                 <div className="arrow arrow-left" onClick={this.leftClick}><i className="fi-arrow-left" style={{color:"black"}}></i></div>
-                <ReactCSSTransitionGroup 
-                    transitionName={this.state.direction}>
+                <TransitionGroup className="carousel-items">
                     {this.generateItems()}
-                </ReactCSSTransitionGroup>
+                </TransitionGroup>
                 <div className="arrow arrow-right" onClick={this.rightClick}><i className="fi-arrow-right"></i></div>
             </div>
         )

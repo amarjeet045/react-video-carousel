@@ -1,0 +1,43 @@
+name: CI - Cypress
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./
+
+      - name: Run Cypress tests (headless)
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm start
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 60
+        env:
+          CI: true
+
+      - name: Stop dev server
+        if: always()
+        run: |
+          # try killing common node processes started by npm start
+          pkill -f "node .*react-scripts" || true
+          pkill -f "npm start" || true
+        working-directory: ./

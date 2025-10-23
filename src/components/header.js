@@ -6,7 +6,7 @@ class Header extends Component{
     render() {
         return (
     <>
-<Navbar collapseOnSelect expand="lg" bg="light" variant="dark">
+<Navbar collapseOnSelect expand="lg" bg="light" variant="dark" data-testid="header">
  
   <Navbar.Collapse id="responsive-navbar-nav">
     {/* <Nav className="mr-auto">

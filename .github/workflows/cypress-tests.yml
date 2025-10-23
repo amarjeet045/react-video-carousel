@@ -1,4 +1,4 @@
-name: CI - Cypress
+name: CI - Cypress (No Dashboard, with Caching & Parallelization)
 
 on:
   push:
@@ -9,6 +9,12 @@ on:
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        testGroup: [group1, group2]  # Add more groups for more parallelism
+
     defaults:
       run:
         shell: bash
@@ -21,20 +27,34 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'  # Cache npm dependencies
+
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            cypress-${{ runner.os }}-
 
       - name: Install dependencies
         run: npm ci
 
-      # ✅ Run Cypress with OpenSSL legacy provider enabled
-      - name: Run Cypress tests (headless)
+      - name: Run Cypress tests (no dashboard)
         uses: cypress-io/github-action@v5
         with:
           start: npm start
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 90
+          config: |
+            video=false
+            screenshotOnRunFailure=false
+          # Run tests only for the current group folder
+          spec: cypress/e2e/${{ matrix.testGroup }}/*.cy.{js,ts}
+
         env:
           CI: true
-          NODE_OPTIONS: --openssl-legacy-provider   # 👈 key fix
+          NODE_OPTIONS: --openssl-legacy-provider
 
       - name: Stop dev server
         if: always()

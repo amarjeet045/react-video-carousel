@@ -12,6 +12,7 @@ jobs:
     defaults:
       run:
         shell: bash
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,21 +24,20 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ./
 
+      # ✅ Run Cypress with OpenSSL legacy provider enabled
       - name: Run Cypress tests (headless)
         uses: cypress-io/github-action@v5
         with:
           start: npm start
           wait-on: 'http://localhost:3000'
-          wait-on-timeout: 60
+          wait-on-timeout: 90
         env:
           CI: true
+          NODE_OPTIONS: --openssl-legacy-provider   # 👈 key fix
 
       - name: Stop dev server
         if: always()
         run: |
-          # try killing common node processes started by npm start
           pkill -f "node .*react-scripts" || true
           pkill -f "npm start" || true
-        working-directory: ./

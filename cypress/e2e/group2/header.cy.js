@@ -5,6 +5,10 @@ describe("Header component test", () => {
   });
 
   it("should display the header with correct text", () => {
-    cy.get("[data-testid='header']").should('exist');
+    cy.get("[data-testid='header']").should("exist");
+  });
+  it("should display the header with correct text", () => {
+    //  data-tetstid="nav-collapse"
+    cy.get("[data-testid='nav-collapse']").should("not.exist");
   });
 });

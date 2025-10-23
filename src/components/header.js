@@ -8,7 +8,7 @@ class Header extends Component{
     <>
 <Navbar collapseOnSelect expand="lg" bg="light" variant="dark" data-testid="header">
  
-  <Navbar.Collapse id="responsive-navbar-nav">
+  <Navbar.Collapse id="responsive-navbar-nav" data-tetstid="nav-collapse">
     {/* <Nav className="mr-auto">
       
       
